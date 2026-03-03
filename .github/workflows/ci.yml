@@ -35,6 +35,7 @@ jobs:
   test:
     name: TestSuite
     runs-on: ubuntu-latest
+
     env:
       APP__ENV: development
       APP__SERVER__HOST: 127.0.0.1
@@ -42,34 +43,42 @@ jobs:
       APP__DATABASE__ENGINE: postgres
       APP__DATABASE__HOST: localhost
       APP__DATABASE__PORT: 5433
-      APP__DATABASE__USER: admin
-      APP__DATABASE__PASSWORD: supersecret
-      APP__DATABASE__NAME: gh_workflow_db
-      APP__AUTH__JWT_SECRET: "s9fK8!dL2vB#4rQm7pWzX1eR6tUqH0yJ"
+      APP__DATABASE__USER: ${{ secrets.CI_DB_USER }}
+      APP__DATABASE__PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+      APP__DATABASE__NAME: ${{ secrets.CI_DB_NAME }}
+
+      APP__AUTH__JWT_SECRET: ${{ secrets.CI_JWT_SECRET }}
       APP__AUTH__JWT_ACCESS_EXPIRATION_TIME_IN_HOURS: 1
       APP__AUTH__JWT_REFRESH_EXPIRATION_TIME_IN_HOURS: 24
       APP__AUTH__JWT_ONE_TIME_PASSWORD_LIFETIME_IN_MINUTES: 5
+
+      DATABASE_URL: postgres://${{ secrets.CI_DB_USER }}:${{ secrets.CI_DB_PASSWORD }}@localhost:5433/${{ secrets.CI_DB_NAME }}
+
     services:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: supersecret
-          POSTGRES_DB: gh_workflow_db
+          POSTGRES_USER: ${{ secrets.CI_DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.CI_DB_NAME }}
         ports:
           - 5433:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd="pg_isready -U ${{ secrets.CI_DB_USER }}"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+
       - name: Install sqlx-cli
         run: cargo install sqlx-cli --no-default-features --features postgres
+
       - name: Run Migrations
-        run: sqlx migrate run --database-url postgres://admin:supersecret@localhost:5433/gh_workflow_db
+        run: sqlx migrate run
+
       - name: Run All Tests
         run: cargo test
