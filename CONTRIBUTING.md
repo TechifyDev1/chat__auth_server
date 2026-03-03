@@ -39,11 +39,11 @@ This project and everyone participating in it is governed by the [Krabby Chat Au
 
 > If you want to ask a question, we assume that you have read the available [Documentation](README.md).
 
-Before you ask a question, it is best to search for existing [Issues](https://github.com/krabby/chat__auth_server/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
+Before you ask a question, it is best to search for existing [Issues](https://github.com/KrabbyHQ/chat__auth_server/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
 
 If you then still feel the need to ask a question and need clarification, we recommend the following:
 
-- Open an [Issue](https://github.com/krabby/chat__auth_server/issues/new).
+- Open an [Issue](https://github.com/KrabbyHQ/chat__auth_server/issues/new).
 
 - Provide as much context as you can about what you're running into.
 
